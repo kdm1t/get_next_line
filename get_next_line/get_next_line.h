@@ -6,13 +6,13 @@
 /*   By: mwilbur <mwilbur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/20 17:21:16 by mwilbur           #+#    #+#             */
-/*   Updated: 2019/09/24 15:30:06 by mwilbur          ###   ########.fr       */
+/*   Updated: 2019/09/25 18:08:43 by mwilbur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# define BUFF_SIZE 7
+# define BUFF_SIZE 21
 # include <unistd.h>
 # include <fcntl.h>
 # include <stdlib.h>
