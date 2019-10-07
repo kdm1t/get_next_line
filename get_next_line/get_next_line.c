@@ -5,80 +5,60 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mwilbur <mwilbur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/20 17:22:20 by mwilbur           #+#    #+#             */
-/*   Updated: 2019/09/25 19:56:05 by mwilbur          ###   ########.fr       */
+/*   Created: 2019/10/07 15:50:39 by mwilbur           #+#    #+#             */
+/*   Updated: 2019/10/07 18:10:08 by mwilbur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "get_next_line.h"
-#include "libft.h"
 
-char		*get_string(char **str)
+t_list  *get_fd(t_list **ptr, int fd)
 {
-	int		i;
-	char	*result;
-	char	*tofree;
-
-	if (!str || !(*str))
-		return (0);
-	i = 0;
-	while ((*str)[i])
-	{
-		if ((*str)[i] == '\n')
-		{
-			result = ft_strsub(*str, 0, i);
-			tofree = *str;
-			*str = ft_strjoin(ft_strchr(*str, '\n') + 1, "");
-			free(tofree);
-			return (result);
-		}
-		i++;
-	}
-	return (NULL);
+    while (*ptr)
+    {
+        if ((int)(*ptr)->content_size == fd)
+            return (*ptr);
+        *ptr = (*ptr)->next;
+    }
+    *ptr = ft_lstnew("\0", fd);
+    ft_lstadd(ptr, *ptr);
+    return (*ptr);
 }
 
-int			get_next_line(const int fd, char **line)
+int     get_next_line(const int fd, char **line)
 {
-	static char	*array[250];
-	char		buff[BUFF_SIZE + 1];
-	int			ret;
-	char		*tmp;
-	char		*tofree;
+    static t_list *list;
+    t_list *current;
+    char buff[BUFF_SIZE + 1];
+    int ret;
+    // int i;
+    
+    if (fd < 0 || !line)
+        return (-1);
+    current = get_fd(&list, fd);
+    if (!current)
+        return (-1);
+    while ((ret = read(fd,buff,BUFF_SIZE)) > 0)
+    {
+        buff[ret] = '\0';
+        current->content = ft_strjoin(current->content, buff);
+        if (!(current->content))
+            return (-1);
+        if (ft_strchr(buff, '\n'))
+            break;
+    }
+    if (ret < BUFF_SIZE && !ft_strlen(current->content))
+        return (0);
+    // i = 
+    // if (i < ft_strlen(current->content))
+    //     current->content += (i + 1);
+    // else
+        ft_strclr(current->content);
+    return (1);
+}
 
-	if (fd < 0 || !line)
-		return (-1);
-	if (array[fd] && (*line = get_string(&array[fd])))
-		return (1);
-	tmp = array[fd];
-	while ((ret = read(fd, &buff, BUFF_SIZE)) > 0)
-	{
-		buff[ret] = '\0';
-		tofree = array[fd];
-		if (!(array[fd] = ft_strjoin(array[fd], buff)))
-			array[fd] = ft_strjoin(buff, "");
-		if (tofree)
-			free(tofree);
-		tmp = array[fd];
-		if (ft_strchr(buff, '\n'))
-		{
-			*line = get_string(&array[fd]);
-			tmp = array[fd];
-			return (1);
-		}
-	}
-	if (ret < 0)
-		return (-1);
-	if (ret == 0 && array[fd])
-	{
-		if (array[fd][0] != '\0')
-		{
-			*line = ft_strjoin(array[fd], "");
-			free(array[fd]);
-			array[fd] = NULL;
-			return (1);
-		}
-	}
-	tmp = array[fd];
-	return (0);
+int main()
+{
+    
+    return (0);
 }
