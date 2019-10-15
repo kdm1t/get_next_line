@@ -13,7 +13,7 @@
 				"-Wextra",
 				"-Werror",
 				"${workspaceFolder}/get_next_line.c",
-				"${workspaceFolder}/main.c",
+				// "${workspaceFolder}/main.c",
 				"${workspaceFolder}/libft.a",
 				"-o",
 				"${workspaceFolder}/a.out"

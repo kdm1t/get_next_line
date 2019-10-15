@@ -6,7 +6,7 @@
 /*   By: mwilbur <mwilbur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/20 17:21:16 by mwilbur           #+#    #+#             */
-/*   Updated: 2019/10/07 16:42:27 by mwilbur          ###   ########.fr       */
+/*   Updated: 2019/10/15 11:17:09 by mwilbur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include "libft.h"
 
 t_list  *get_fd(t_list **ptr, int fd);
+int		ft_strcpy_befch(char **first, char *second, char c);
+int		ft_result(int ret, char **line, t_list *current);
 int		get_next_line(const int fd, char **line);
 
 #endif
