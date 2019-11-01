@@ -1,8 +1,0 @@
-This is the
-first file.
-It's the
-second
-file.
-I'm third
-Hi
-:).

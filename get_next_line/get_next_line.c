@@ -5,121 +5,53 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mwilbur <mwilbur@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/07 15:50:39 by mwilbur           #+#    #+#             */
-/*   Updated: 2019/10/15 12:18:31 by mwilbur          ###   ########.fr       */
+/*   Created: 2019/11/01 17:39:15 by mwilbur           #+#    #+#             */
+/*   Updated: 2019/11/01 17:54:43 by mwilbur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-#include <stdio.h>
-
-t_list  *get_fd(t_list **ptr, int fd)
+int		get_str(char **str, char **line, int ret)
 {
-    while (*ptr)
-    {
-        if ((int)(*ptr)->content_size == fd)
-            return (*ptr);
-        *ptr = (*ptr)->next;
-    }
-    *ptr = ft_lstnew("\0", fd);
-    ft_lstadd(ptr, *ptr);
-    return (*ptr);
+	int		i;
+	char	*tmp;
+
+	i = 0;
+	tmp = NULL;
+	if (!ret && (!(*str) || !(*str)[0]))
+		return (0);
+	while ((*str)[i] && (*str)[i] != '\n')
+		i++;
+	*line = ft_strsub(*str, 0, i);
+	if ((*str)[i] == '\n')
+		tmp = ft_strdup(ft_strchr(*str, '\n') + 1);
+	free(*str);
+	*str = tmp;
+	return (1);
 }
 
-int     ft_strcpy_befch(char **first, char *second, char c)
+int		get_next_line(const int fd, char **line)
 {
-    int i;
-    int counter;
-    char *tmp;
+	int			ret;
+	char		buff[BUFF_SIZE + 1];
+	static char	*str[10240];
+	char		*ptr;
 
-     i = 0;
-     counter = 0;
-     while (second[i])
-     {
-         if (second[i] == c)
-            break;
-        i++;
-     }
-     *first = ft_strnew(i);
-     tmp = ft_strnew(0);
-    if (!(*first) || !(tmp))
-        return (0);
-    while (second[counter] && counter < i)
-    {
-        *tmp = second[counter];
-        *first = ft_strjoin(*first, tmp);
-        if (!(*first))
-            return (0);
-        counter++;
-    }
-    return (i);
+	if (fd < 0 || !line)
+		return (-1);
+	while ((ret = read(fd, buff, BUFF_SIZE)) > 0)
+	{
+		buff[ret] = '\0';
+		if (!str[fd])
+			str[fd] = ft_strnew(0);
+		ptr = ft_strjoin(str[fd], buff);
+		free(str[fd]);
+		str[fd] = ptr;
+		if (ft_strchr(buff, '\n'))
+			break ;
+	}
+	if (ret == -1)
+		return (-1);
+	return (get_str(&str[fd], line, ret));
 }
-
-int     ft_result(int ret, char **line, t_list *current)
-{
-    if (ret < BUFF_SIZE && !ft_strlen(current->content))
-        return (0);
-    int i;
-
-    i = 0;
-    i = ft_strcpy_befch(line, current->content, '\n');
-    if (i < (int)ft_strlen(current->content))
-        current->content += (i + 1);
-    else
-        ft_strclr(current->content);
-    return (1);
-
-}
-
-int     get_next_line(const int fd, char **line)
-{
-    static t_list   *list;
-    t_list          *current;
-    char            buff[BUFF_SIZE + 1];
-    int             ret;
-
-    if (fd < 0 || !line)
-        return (-1);
-    current = get_fd(&list, fd);
-    if (!current)
-        return (-1);
-    *line = ft_strnew(0);
-    if (!(*line))
-        return (-1);
-    while ((ret = read(fd,buff,BUFF_SIZE)))
-    {
-        buff[ret] = '\0';
-        current->content = ft_strjoin(current->content, buff);
-        if (!(current->content))
-            return (-1);
-        if (ft_strchr(buff, '\n'))
-            return (ft_result(ret, line, current));
-    }
-    return (ft_result(ret, &(*line), current));
-}
-
-// int     main(void)
-// {
-//     char *line;
-//     int out;
-//     int p[2];
-//     int fd;
-
-//     fd = 1;
-//     out = dup(fd);
-//     pipe(p);
-
-//     dup2(p[1], fd);
-//     write(fd, "aaa\nbbb\nccc\nddd\n", 16);
-//     dup2(out, fd);
-//     close(p[1]);
-//     get_next_line(p[0], &line);
-//     printf("aaa = %s\n", line);
-//     get_next_line(p[0], &line);
-//     printf("bbb = %s\n", line);
-//     get_next_line(p[0], &line);
-//     printf("ccc = %s\n", line);
-//     get_next_line(p[0], &line);
-//     printf("ddd = %s\n", line);
-// }
