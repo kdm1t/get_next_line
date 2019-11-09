@@ -6,7 +6,7 @@
 #    By: mwilbur <mwilbur@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/09/09 14:54:28 by mwilbur           #+#    #+#              #
-#    Updated: 2019/09/19 22:00:23 by mwilbur          ###   ########.fr        #
+#    Updated: 2019/11/09 16:04:54 by mwilbur          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -144,10 +144,12 @@ FLAGS=-Wall -Wextra -Werror
 
 all: $(NAME)
 
-$(NAME): $(SRCS) $(HEADER)
-		gcc -I $(HEADER) -c $(FLAGS) $(SRCS)
+$(NAME): $(OBJECTS) $(HEADER)
 		ar rc $(NAME) $(OBJECTS)
 		ranlib $(NAME)
+
+%.o: %.c
+	gcc -c $(FLAGS) $<
 
 clean:
 	rm -f $(OBJECTS)
